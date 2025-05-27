@@ -1490,7 +1490,7 @@ Possible extra rowspan handling
 </style>
   <meta content="Bikeshed version b25686b9f, updated Fri Mar 14 14:15:20 2025 -0700" name="generator">
   <link href="https://w3id.org/force/odrl3proposal" rel="canonical">
-  <meta content="860b55ace80ae6babfd401f446c2d8aac45e9bb8" name="revision">
+  <meta content="76eb59b38dd5bfcf042d0b82fde444fe8e505d1a" name="revision">
   <meta content="dark light" name="color-scheme">
 <style>/* Boilerplate: style-autolinks */
 .css.css, .property.property, .descriptor.descriptor {
@@ -2015,7 +2015,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://knows.idlab.ugent.be/"> <img alt="KNoWS" height="48" src="logo.png"> </a></p>
    <h1 class="p-name no-ref" id="title">Open Digital Rights Language (ODRL) 3.0 Proposal</h1>
-   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2025-05-12">12 May 2025</time></span></h2>
+   <h2 class="no-num no-toc no-ref heading settled" id="profile-and-date"><span class="content">Living Document, <time class="dt-updated" datetime="2025-05-27">27 May 2025</time></span></h2>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -2024,6 +2024,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
      <dd><a href="_ORCHESTRATOR_PREVIOUS_BUILD_FULL_LINK_" rel="prev">_ORCHESTRATOR_PREVIOUS_BUILD_FULL_LINK_</a>
      <dt>Issue Tracking:
      <dd><a href="https://github.com/KNowledgeOnWebScale/odrl3proposal/issues/">GitHub</a>
+     <dd><a href="#issues-index">Inline In Spec</a>
      <dt class="editor">Editors:
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:beatriz.esteves@ugent.be">Beatriz Esteves</a> (<a class="p-org org" href="http://idlab.ugent.be/">Ghent University - imec</a>)
      <dd class="editor p-author h-card vcard"><a class="p-name fn u-email email" href="mailto:wout.slabbinck@ugent.be">Wout Slabbinck</a> (<a class="p-org org" href="http://idlab.ugent.be/">Ghent University - imec</a>)
@@ -2039,7 +2040,7 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
   </div>
   <div class="p-summary" data-fill-with="abstract">
    <h2 class="no-num no-toc no-ref heading settled" id="abstract"><span class="content">Abstract</span></h2>
-   <p>TODO</p>
+   <p>This document proposes a set of improvements to ODRL, to be integrated in a future version 3.0, derived from concrete use cases and requirements.</p>
   </div>
   <div data-fill-with="at-risk"></div>
   <nav data-fill-with="table-of-contents" id="toc">
@@ -2049,15 +2050,39 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
      <a href="#introduction"><span class="secno">1</span> <span class="content">Introd­uction</span></a>
      <ol class="toc">
       <li><a href="#terminology"><span class="secno">1.1</span> <span class="content">Terminology</span></a>
+      <li><a href="#namespaces"><span class="secno">1.2</span> <span class="content">Namespaces</span></a>
      </ol>
-    <li><a href="#supporting-materials"><span class="secno">2</span> <span class="content">Supporting Materials</span></a>
-    <li><a href="#namespaces"><span class="secno">3</span> <span class="content">Namespaces</span></a>
+    <li>
+     <a href="#use-cases"><span class="secno">2</span> <span class="content">Use Cases</span></a>
+     <ol class="toc">
+      <li><a href="#uc1"><span class="secno">2.1</span> <span class="content">UC1 - Dynamic Asset Collection Materialization</span></a>
+      <li><a href="#uc2"><span class="secno">2.2</span> <span class="content">UC2 - ...</span></a>
+     </ol>
+    <li>
+     <a href="#requirements"><span class="secno">3</span> <span class="content">Requirements</span></a>
+     <ol class="toc">
+      <li><a href="#r1"><span class="secno">3.1</span> <span class="content">R1 - Define Asset Collection membership relation</span></a>
+      <li><a href="#r2"><span class="secno">3.2</span> <span class="content">R2 - ...</span></a>
+     </ol>
+    <li>
+     <a href="#proposal"><span class="secno">4</span> <span class="content">ODRL 3.0 Proposal</span></a>
+     <ol class="toc">
+      <li>
+       <a href="#new-terms"><span class="secno">4.1</span> <span class="content">Adding new terms to the ODRL vocabulary</span></a>
+       <ol class="toc">
+        <li><a href="#relation"><span class="secno">4.1.1</span> <span class="content">Relation</span></a>
+        <li><a href="#scope"><span class="secno">4.1.2</span> <span class="content">Scope</span></a>
+       </ol>
+      <li><a href="#changing-terms"><span class="secno">4.2</span> <span class="content">Changing existing terms of the ODRL vocabulary</span></a>
+     </ol>
+    <li><a href="#supporting-materials"><span class="secno">5</span> <span class="content">Supporting Materials</span></a>
     <li><a href="#conformance"><span class="secno"></span> <span class="content"> Conformance</span></a>
     <li>
      <a href="#references"><span class="secno"></span> <span class="content">References</span></a>
      <ol class="toc">
       <li><a href="#normative"><span class="secno"></span> <span class="content">Normative References</span></a>
      </ol>
+    <li><a href="#issues-index"><span class="secno"></span> <span class="content">Issues Index</span></a>
    </ol>
   </nav>
   <main>
@@ -2067,7 +2092,111 @@ Mention ODRL <a data-link-type="biblio" href="#biblio-odrl-model" title="ODRL In
    <p>Formal Semantics spec <a data-link-type="biblio" href="#biblio-odrl-formal-semantics" title="ODRL Formal Semantics">[odrl-formal-semantics]</a></p>
    <h3 class="heading settled" data-level="1.1" id="terminology"><span class="secno">1.1. </span><span class="content">Terminology</span><a class="self-link" href="#terminology"></a></h3>
    <p>TODO</p>
-   <h2 class="heading settled" data-level="2" id="supporting-materials"><span class="secno">2. </span><span class="content">Supporting Materials</span><a class="self-link" href="#supporting-materials"></a></h2>
+   <h3 class="heading settled" data-level="1.2" id="namespaces"><span class="secno">1.2. </span><span class="content">Namespaces</span><a class="self-link" href="#namespaces"></a></h3>
+   <p>Commonly used namespace prefixes used in this specification:</p>
+<pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>dcterms:</c->       <c- g>&lt;http://purl.org/dc/terms/></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>odrl:</c->          <c- g>&lt;http://www.w3.org/ns/odrl/2/></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>odrl3proposal:</c-> <c- g>&lt;https://w3id.org/force/odrl3proposal#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>report:</c->        <c- g>&lt;https://w3id.org/force/compliance-report#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>rdf:</c->           <c- g>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>skos:</c->          <c- g>&lt;http://www.w3.org/2004/02/skos/core#></c-> <c- p>.</c->
+<c- k>@prefix</c-> <c- nn>xsd:</c->           <c- g>&lt;http://www.w3.org/2001/XMLSchema#></c-> <c- p>.</c->
+</pre>
+   <h2 class="heading settled" data-level="2" id="use-cases"><span class="secno">2. </span><span class="content">Use Cases</span><a class="self-link" href="#use-cases"></a></h2>
+   <h3 class="heading settled" data-level="2.1" id="uc1"><span class="secno">2.1. </span><span class="content">UC1 - Dynamic Asset Collection Materialization</span><a class="self-link" href="#uc1"></a></h3>
+   <p>In ODRL terms, an Asset Collection is defined as a single resource representing a set of member resources,
+considering that all members of the set are subject to a rule if this rule is defined with the asset collection as its target.
+To materialise which Assets belong to an Asset Collection, ODRL has the partOf property.
+However, if this materialisation is still to be done to enforce policies over a collection,
+i.e., there is still no information in the state of the world of which Assets are <code>partOf</code> the Asset Collection,
+a solution is required to materialise which resources are members of the collection
+depending on the relation between said resources and the collection.</p>
+   <h3 class="heading settled" data-level="2.2" id="uc2"><span class="secno">2.2. </span><span class="content">UC2 - ...</span><a class="self-link" href="#uc2"></a></h3>
+    TODO 
+   <h2 class="heading settled" data-level="3" id="requirements"><span class="secno">3. </span><span class="content">Requirements</span><a class="self-link" href="#requirements"></a></h2>
+   <h3 class="heading settled" data-level="3.1" id="r1"><span class="secno">3.1. </span><span class="content">R1 - Define Asset Collection membership relation</span><a class="self-link" href="#r1"></a></h3>
+   <p>To solve <a href="#uc1">UC1</a>, there is the need to describe the relation between the Asset Collection and its Asset members,
+which is needed to materialise which Assets belong to an Asset Collection using ODRL’s <code>partOf</code> property.
+For example, if we have an Asset Collection</p>
+<pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>ldp:</c-> <c- g>&lt;http://www.w3.org/ns/ldp#></c-> <c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>assetCollection</c-> <c- b>a</c-> <c- nn>odrl</c-><c- p>:</c-><c- f>AssetCollection</c-> <c- p>;</c->
+    <c- nn>odrl</c-><c- p>:</c-><c- f>source</c-> <c- g>&lt;http://localhost:3000/container/></c-> <c- p>;</c->
+    <c- nn>odrl3proposal</c-><c- p>:</c-><c- f>relation</c-> <c- nn>ldp</c-><c- p>:</c-><c- f>contains</c-> <c- p>.</c->
+</pre>
+   <p>the term <a href="#relation">odrl3proposal:relation</a> can be used to describe the relation of an Asset Collection with its members,
+which in this example is classified by the <a href="http://www.w3.org/ns/ldp#contains">ldp:contains</a> property.
+In this case, when the members of the Asset Collection, whose source is <code>&lt;http://localhost:3000/container/></code>,
+need to be materialised using the <code>ldp:contains</code> relation, if</p>
+<pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>ldp:</c-> <c- g>&lt;http://www.w3.org/ns/ldp#></c-> <c- p>.</c->
+
+<c- g>&lt;http://localhost:3000/container/></c-> <c- b>a</c-> <c- nn>ldp</c-><c- p>:</c-><c- f>Container</c-><c- p>;</c->
+    <c- nn>ldp</c-><c- p>:</c-><c- f>contains</c-> <c- g>&lt;http://localhost:3000/container/resource1.ttl></c-> <c- p>;</c->
+    <c- nn>ldp</c-><c- p>:</c-><c- f>contains</c-> <c- g>&lt;http://localhost:3000/container/resource2.txt></c-> <c- p>;</c->
+    <c- nn>ldp</c-><c- p>:</c-><c- f>contains</c-> <c- g>&lt;http://localhost:3000/container/resource3.png></c-> <c- p>.</c->
+</pre>
+   <p>then the following ODRL’s <code>partOf</code> memberships can be materialised</p>
+<pre class="language-turtle highlight"><c- g>&lt;http://localhost:3000/container/resource1.ttl></c-> <c- nn>odrl</c-><c- p>:</c-><c- f>partOf</c-> <c- g>&lt;http://localhost:3000/container/></c-> <c- p>.</c->
+<c- g>&lt;http://localhost:3000/container/resource2.txt></c-> <c- nn>odrl</c-><c- p>:</c-><c- f>partOf</c-> <c- g>&lt;http://localhost:3000/container/></c-> <c- p>.</c->
+<c- g>&lt;http://localhost:3000/container/resource3.png></c-> <c- nn>odrl</c-><c- p>:</c-><c- f>partOf</c-> <c- g>&lt;http://localhost:3000/container/></c-> <c- p>.</c->
+</pre>
+   <h3 class="heading settled" data-level="3.2" id="r2"><span class="secno">3.2. </span><span class="content">R2 - ...</span><a class="self-link" href="#r2"></a></h3>
+    TODO 
+   <h2 class="heading settled" data-level="4" id="proposal"><span class="secno">4. </span><span class="content">ODRL 3.0 Proposal</span><a class="self-link" href="#proposal"></a></h2>
+   <h3 class="heading settled" data-level="4.1" id="new-terms"><span class="secno">4.1. </span><span class="content">Adding new terms to the ODRL vocabulary</span><a class="self-link" href="#new-terms"></a></h3>
+   <h4 class="heading settled" data-level="4.1.1" id="relation"><span class="secno">4.1.1. </span><span class="content">Relation</span><a class="self-link" href="#relation"></a></h4>
+   <table class="def">
+    <tbody>
+     <tr>
+      <th>IRI
+      <td><a href="https://w3id.org/force/odrl3proposal#relation">https://w3id.org/force/odrl3proposal#relation</a>
+     <tr>
+      <th>Label
+      <td>relation
+     <tr>
+      <th>Type
+      <td><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property">rdf:Property</a>, <a href="http://www.w3.org/2004/02/skos/core#Concept">skos:Concept</a>
+     <tr>
+      <th>Definition
+      <td>The <code>relation</code> property is used to classify the relation between the <code>odrl:Asset</code>s that are <code>odrl:partOf</code> a <code>odrl:AssetCollection</code> and the <code>odrl:source</code> of said collection.
+     <tr>
+      <th>Domain
+      <td><a href="http://www.w3.org/ns/odrl/2/AssetCollection">odrl:AssetCollection</a>
+     <tr>
+      <th>Range
+      <td><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property">rdf:Property</a>
+   </table>
+   <h4 class="heading settled" data-level="4.1.2" id="scope"><span class="secno">4.1.2. </span><span class="content">Scope</span><a class="self-link" href="#scope"></a></h4>
+   <table class="def">
+    <tbody>
+     <tr>
+      <th>IRI
+      <td><a href="https://w3id.org/force/odrl3proposal#scope">https://w3id.org/force/odrl3proposal#scope</a>
+     <tr>
+      <th>Label
+      <td>scope
+     <tr>
+      <th>Type
+      <td><a href="http://www.w3.org/1999/02/22-rdf-syntax-ns#Property">rdf:Property</a>, <a href="http://www.w3.org/2004/02/skos/core#Concept">skos:Concept</a>
+     <tr>
+      <th>Definition
+      <td>The <code>scope</code> property indicates the actions on which a <code>odrl:Policy</code>, with the subject <code>odrl:Asset</code> as <code>odrl:target</code>, can be defined.
+     <tr>
+      <th>Domain
+      <td><a href="http://www.w3.org/ns/odrl/2/Asset">odrl:Asset</a>
+     <tr>
+      <th>Range
+      <td><a href="http://www.w3.org/ns/odrl/2/Action">odrl:Action</a>
+   </table>
+   <h3 class="heading settled" data-level="4.2" id="changing-terms"><span class="secno">4.2. </span><span class="content">Changing existing terms of the ODRL vocabulary</span><a class="self-link" href="#changing-terms"></a></h3>
+   <div class="issue" id="issue-5c288c7e">
+    <a class="self-link" href="#issue-5c288c7e"></a> 
+    <p>UID identifier in ODRL: UID needs to be out of ODRL somehow, it is not nice</p>
+<pre class="language-turtle highlight"><c- g>&lt;urn:uuid:e30bcd34-0d5c-43d1-b229-bf68afcae5ae></c-> <c- b>a</c-> <c- nn>odrl</c-><c- p>:</c-><c- f>Set</c-> <c- p>;</c->
+    <c- nn>odrl</c-><c- p>:</c-><c- f>uid</c-> <c- g>&lt;urn:uuid:e30bcd34-0d5c-43d1-b229-bf68afcae5ae></c->
+</pre>
+   </div>
+   <h2 class="heading settled" data-level="5" id="supporting-materials"><span class="secno">5. </span><span class="content">Supporting Materials</span><a class="self-link" href="#supporting-materials"></a></h2>
    <ul>
     <li data-md>
      <p>FORCE: https://w3id.org/force/</p>
@@ -2086,14 +2215,6 @@ Mention ODRL <a data-link-type="biblio" href="#biblio-odrl-model" title="ODRL In
     <li data-md>
      <p>github repository for an ODRL Evaluator: <a href="https://w3id.org/force/evaluator">https://w3id.org/force/evaluator</a></p>
    </ul>
-   <h2 class="heading settled" data-level="3" id="namespaces"><span class="secno">3. </span><span class="content">Namespaces</span><a class="self-link" href="#namespaces"></a></h2>
-   <p>Commonly used namespace prefixes used in this specification:</p>
-<pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>dcterms:</c->    <c- g>&lt;http://purl.org/dc/terms/></c-> <c- p>.</c->
-<c- k>@prefix</c-> <c- nn>odrl:</c->   <c- g>&lt;http://www.w3.org/ns/odrl/2/></c-><c- p>.</c->
-<c- k>@prefix</c-> <c- nn>report:</c-> <c- g>&lt;https://w3id.org/force/compliance-report#></c->
-<c- k>@prefix</c-> <c- nn>rdf:</c->    <c- g>&lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#></c-> <c- p>.</c->
-<c- k>@prefix</c-> <c- nn>xsd:</c->    <c- g>&lt;http://www.w3.org/2001/XMLSchema#></c-> <c- p>.</c->
-</pre>
   </main>
   <div data-fill-with="conformance">
    <h2 class="no-ref no-num heading settled" id="conformance"><span class="content"> Conformance</span><a class="self-link" href="#conformance"></a></h2>
@@ -2253,3 +2374,13 @@ Mention ODRL <a data-link-type="biblio" href="#biblio-odrl-model" title="ODRL In
    <dt id="biblio-rfc2119">[RFC2119]
    <dd>S. Bradner. <a href="https://datatracker.ietf.org/doc/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. March 1997. Best Current Practice. URL: <a href="https://datatracker.ietf.org/doc/html/rfc2119">https://datatracker.ietf.org/doc/html/rfc2119</a>
   </dl>
+  <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
+  <div style="counter-reset:issue">
+   <div class="issue">
+    <p>UID identifier in ODRL: UID needs to be out of ODRL somehow, it is not nice</p>
+<pre class="language-turtle highlight"><c- g>&lt;urn:uuid:e30bcd34-0d5c-43d1-b229-bf68afcae5ae></c-> <c- b>a</c-> <c- nn>odrl</c-><c- p>:</c-><c- f>Set</c-> <c- p>;</c->
+    <c- nn>odrl</c-><c- p>:</c-><c- f>uid</c-> <c- g>&lt;urn:uuid:e30bcd34-0d5c-43d1-b229-bf68afcae5ae></c->
+</pre>
+     <a class="issue-return" href="#issue-5c288c7e" title="Jump to section">↵</a>
+   </div>
+  </div>

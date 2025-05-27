@@ -1,13 +1,13 @@
 <pre class='metadata'>
 Title: Open Digital Rights Language (ODRL) 3.0 Proposal
-Shortname: FORCE
+Shortname: odrl3proposal
 Level: none
 Status: LD
 Editor: Beatriz Esteves, Ghent University - imec http://idlab.ugent.be/, beatriz.esteves@ugent.be
 Editor: Wout Slabbinck, Ghent University - imec http://idlab.ugent.be/, wout.slabbinck@ugent.be
 Editor: Wouter Termont, Ghent University - imec http://idlab.ugent.be/, wouter.termont@ugent.be
 Editor: Joachim Van Herwegen, Ghent University - imec http://idlab.ugent.be/, joachim.vanherwegen@ugent.be
-Abstract: TODO
+Abstract: This document proposes a set of improvements to ODRL, to be integrated in a future version 3.0, derived from concrete use cases and requirements.
 Markup Shorthands: markdown yes, css no
 URL: https://w3id.org/force/odrl3proposal
 Previous Version: _ORCHESTRATOR_PREVIOUS_BUILD_FULL_LINK_
@@ -18,6 +18,131 @@ Repository: https://github.com/KNowledgeOnWebScale/odrl3proposal
 <p boilerplate="copyright">
   <!-- This document is made available under the CC-BY-SA-4.0 License. -->
 </p>
+
+Introd­uction {#introduction}
+============================
+TODO: write full text
+Mention ODRL
+[[!ODRL-model]] [[!odrl-vocab]]
+
+Formal Semantics spec [[!odrl-formal-semantics]]
+
+## Terminology ## {#terminology}
+
+TODO
+
+## Namespaces ## {#namespaces}
+
+Commonly used namespace prefixes used in this specification:
+```turtle
+@prefix dcterms:       <http://purl.org/dc/terms/> .
+@prefix odrl:          <http://www.w3.org/ns/odrl/2/> .
+@prefix odrl3proposal: <https://w3id.org/force/odrl3proposal#> .
+@prefix report:        <https://w3id.org/force/compliance-report#> .
+@prefix rdf:           <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix skos:          <http://www.w3.org/2004/02/skos/core#> .
+@prefix xsd:           <http://www.w3.org/2001/XMLSchema#> .
+```
+
+Use Cases {#use-cases}
+======================
+
+## UC1 - Dynamic Asset Collection Materialization ## {#uc1}
+
+In ODRL terms, an Asset Collection is defined as a single resource representing a set of member resources,
+considering that all members of the set are subject to a rule if this rule is defined with the asset collection as its target.
+To materialise which Assets belong to an Asset Collection, ODRL has the partOf property.
+However, if this materialisation is still to be done to enforce policies over a collection,
+i.e., there is still no information in the state of the world of which Assets are `partOf` the Asset Collection,
+a solution is required to materialise which resources are members of the collection
+depending on the relation between said resources and the collection.
+
+## UC2 - ... ## {#uc2}
+TODO
+
+Requirements {#requirements}
+============================
+
+## R1 - Define Asset Collection membership relation ## {#r1}
+
+To solve [UC1](#uc1), there is the need to describe the relation between the Asset Collection and its Asset members,
+which is needed to materialise which Assets belong to an Asset Collection using ODRL's `partOf` property.
+For example, if we have an Asset Collection
+```turtle
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+
+ex:assetCollection a odrl:AssetCollection ;
+    odrl:source <http://localhost:3000/container/> ;
+    odrl3proposal:relation ldp:contains .
+```
+the term [odrl3proposal:relation](#relation) can be used to describe the relation of an Asset Collection with its members,
+which in this example is classified by the [ldp:contains](http://www.w3.org/ns/ldp#contains) property.
+In this case, when the members of the Asset Collection, whose source is `<http://localhost:3000/container/>`,
+need to be materialised using the `ldp:contains` relation, if 
+```turtle
+@prefix ldp: <http://www.w3.org/ns/ldp#> .
+
+<http://localhost:3000/container/> a ldp:Container;
+    ldp:contains <http://localhost:3000/container/resource1.ttl> ;
+    ldp:contains <http://localhost:3000/container/resource2.txt> ;
+    ldp:contains <http://localhost:3000/container/resource3.png> .
+```
+then the following ODRL's `partOf` memberships can be materialised
+```turtle
+<http://localhost:3000/container/resource1.ttl> odrl:partOf <http://localhost:3000/container/> .
+<http://localhost:3000/container/resource2.txt> odrl:partOf <http://localhost:3000/container/> .
+<http://localhost:3000/container/resource3.png> odrl:partOf <http://localhost:3000/container/> .
+```
+
+## R2 - ... ## {#r2}
+TODO
+
+ODRL 3.0 Proposal {#proposal}
+============================
+
+## Adding new terms to the ODRL vocabulary ## {#new-terms}
+
+### Relation ### {#relation}
+
+<pre class=simpledef>
+IRI: [https://w3id.org/force/odrl3proposal#relation](https://w3id.org/force/odrl3proposal#relation)
+Label: relation
+Type: [rdf:Property](http://www.w3.org/1999/02/22-rdf-syntax-ns#Property), [skos:Concept](http://www.w3.org/2004/02/skos/core#Concept)
+Definition: The `relation` property is used to classify the relation between the `odrl:Asset`s that are `odrl:partOf` a `odrl:AssetCollection` and the `odrl:source` of said collection.
+Domain: [odrl:AssetCollection](http://www.w3.org/ns/odrl/2/AssetCollection)
+Range: [rdf:Property](http://www.w3.org/1999/02/22-rdf-syntax-ns#Property)
+</pre>
+
+### Scope ### {#scope}
+
+<pre class=simpledef>
+IRI: [https://w3id.org/force/odrl3proposal#scope](https://w3id.org/force/odrl3proposal#scope)
+Label: scope
+Type: [rdf:Property](http://www.w3.org/1999/02/22-rdf-syntax-ns#Property), [skos:Concept](http://www.w3.org/2004/02/skos/core#Concept)
+Definition: The `scope` property indicates the actions on which a `odrl:Policy`, with the subject `odrl:Asset` as `odrl:target`, can be defined.
+Domain: [odrl:Asset](http://www.w3.org/ns/odrl/2/Asset)
+Range: [odrl:Action](http://www.w3.org/ns/odrl/2/Action)
+</pre>
+
+## Changing existing terms of the ODRL vocabulary ## {#changing-terms}
+
+<div class="issue">
+<p>UID identifier in ODRL: UID needs to be out of ODRL somehow, it is not nice</p>
+```turtle
+<urn:uuid:e30bcd34-0d5c-43d1-b229-bf68afcae5ae> a odrl:Set ;
+    odrl:uid <urn:uuid:e30bcd34-0d5c-43d1-b229-bf68afcae5ae>
+```
+</div>
+
+Supporting Materials {#supporting-materials}
+============================================
+
+- FORCE: https://w3id.org/force/
+- ODRL Compliance Report: https://w3id.org/force/compliance-report
+    - repo: https://w3id.org/force/compliance-report/repo
+- test suite: https://w3id.org/force/test-suite
+    - repo: https://w3id.org/force/test-suite/repo
+- github repository for an ODRL Evaluator: [https://w3id.org/force/evaluator](https://w3id.org/force/evaluator)
 
 <pre class=biblio> 
 {"odrl-formal-semantics": {
@@ -33,37 +158,3 @@ Repository: https://github.com/KNowledgeOnWebScale/odrl3proposal
     }
 }
 </pre>
-
-Introd­uction {#introduction}
-=====================
-TODO: write full text
-Mention ODRL
-[[!ODRL-model]] [[!odrl-vocab]]
-
-Formal Semantics spec [[!odrl-formal-semantics]]
-
-## Terminology ## {#terminology}
-
-TODO
-
-Supporting Materials {#supporting-materials}
-=====================
-
-- FORCE: https://w3id.org/force/
-- ODRL Compliance Report: https://w3id.org/force/compliance-report
-    - repo: https://w3id.org/force/compliance-report/repo
-- test suite: https://w3id.org/force/test-suite
-    - repo: https://w3id.org/force/test-suite/repo
-- github repository for an ODRL Evaluator: [https://w3id.org/force/evaluator](https://w3id.org/force/evaluator)
-
-Namespaces {#namespaces}
-=====================
-
-Commonly used namespace prefixes used in this specification:
-```turtle
-@prefix dcterms:    <http://purl.org/dc/terms/> .
-@prefix odrl:   <http://www.w3.org/ns/odrl/2/>.
-@prefix report: <https://w3id.org/force/compliance-report#>
-@prefix rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-@prefix xsd:    <http://www.w3.org/2001/XMLSchema#> .
-```
