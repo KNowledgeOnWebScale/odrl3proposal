@@ -6,6 +6,7 @@
 @prefix owl:           <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:           <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:          <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sh:             <http://www.w3.org/ns/shacl#>.
 @prefix skos:          <http://www.w3.org/2004/02/skos/core#> .
 @prefix vann:          <http://purl.org/vocab/vann/> .
 @prefix xsd:           <http://www.w3.org/2001/XMLSchema#> .
@@ -36,7 +37,12 @@
     dcterms:source <http://www.w3.org/ns/odrl/2/>, <https://w3c.github.io/odrl/formal-semantics/> ;
     dcterms:license <https://creativecommons.org/licenses/by-sa/4.0/> .
 
+# ---------------- Classes ------------------ #
 
+odrl3proposal:OperandReference a rdfs:Class, skos:Concept ;
+    rdfs:label "Operand Rerefence"@en ;
+    rdfs:isDefinedBy odrl3proposal: ;
+    skos:definition "The `Operand Reference` class is used to to represent a Right Operand Value that has to be dynamically be materialized based on its properties."@en .
 
 # ---------------- Properties ------------------ #
 
@@ -53,3 +59,19 @@ odrl3proposal:scope a rdf:Property, skos:Concept ;
     skos:definition "The `scope` property indicates the actions on which a `odrl:Policy`, with the subject `odrl:Asset` as `odrl:target`, can be defined."@en ;
     rdfs:domain odrl:Asset ; 
     rdfs:range odrl:Action .
+
+odrl3proposal:path a rdf:Property, skos:Concept ;
+    rdfs:label "path"@en ;
+    rdfs:isDefinedBy odrl3proposal: ;
+    skos:definition "The `path` property indicates the SHACL Property Path which describes the path from a specific focus node to a value it describes."@en ;
+    skos:scopeNote "There is an extra constraint to the SHACL Property Path: It MUST only resolve to one value."@en ;
+    rdfs:domain odrl3proposal:OperandReference ;
+    rdfs:range sh:path .
+
+odrl3proposal:reference a rdf:Property, skos:Concept ;
+    rdfs:label "reference"@en ;
+    rdfs:isDefinedBy odrl3proposal: ;
+    skos:definition "The `reference` property indicates external source that has to be dereferenced."@en ;
+    skos:scopeNote "The source MUST have a valid RDF presentation."@en ;
+    rdfs:domain odrl3proposal:OperandReference ;
+    rdfs:range xsd:anyURI .
