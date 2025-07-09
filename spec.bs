@@ -57,8 +57,19 @@ i.e., there is still no information in the state of the world of which Assets ar
 a solution is required to materialise which resources are members of the collection
 depending on the relation between said resources and the collection.
 
-## UC2 - ... ## {#uc2}
-TODO
+## UC2 - Dynamic Right Operand Constraint Value ## {#uc2}
+
+An ODRL Constraint has two operands to which comparisons can be made with one relational operator:
+- **Left Operand**: An instance of `odrl:LeftOperand`, linked via the `odrl:leftOperand` property.
+- **Operator**: A comparison operator from the `odrl:Operator` class.
+- **Right Operand**: Either a static value (`odrl:rightOperand`) or a dynamic reference (`odrl:rightOperandReference`) that must be dereferenced at evaluation time.
+
+The problem is that there is not enough information to dereference a value from the IRI of the `odrl:rightOperandReference` relation.
+There is a need for a solution that deterministically can fetch the value, such that proper comparisons can be made.
+
+Note: **Publication that introduced this problem and gave a theoretical solution**(that requires major changes to ODRL 2.2): Akaichi *et al.*, 2024, [*'Interoperable and Continuous Usage Control Enforcement in Dataspaces'*](https://raw.githubusercontent.com/woutslabbinck/papers/main/2024/Interoperable_and_Continuous_Usage_Control_Enforcement_in_Dataspaces.pdf).
+
+Note: As of 09/07/2025, there exists no formal method to materialize left operand values from their classes. This issue is known by the ODRL Community Group, more specific the people working on the ODRL Formal Semantics specification [[!odrl-formal-semantics]].
 
 Requirements {#requirements}
 ============================
@@ -94,8 +105,50 @@ then the following ODRL's `partOf` memberships can be materialised
 <http://localhost:3000/container/resource3.png> odrl:partOf <http://localhost:3000/container/> .
 ```
 
-## R2 - ... ## {#r2}
-TODO
+## R2 - Dynamic ODRL Specification ## {#r2}
+
+To solve [UC2](#uc2), there is a need for enough information and an algorithm to deterministically dereference the Right Operand Reference Value.
+
+### Proposed solution
+
+Introduction of the class [Operand Reference](#operandReference) with two properties:
+- [reference](#reference): The IRI that has to be derefenced.
+- [path](#path): A SHACL Property path, which is used to derive a value from a focus node (in this case the referenced IRI)
+
+When the reference source is derefenced and the SHACL Property Path is executed on the source, this will always produce one value under the following assumptions (which MUST be conformed to):
+- The source to be derefenced MUST be a valid RDF Document 
+- The SHACL Property Path MUST always, when followed, resolve into a single value.
+
+As the policy remains static and the source can change over time, this solution proposes a method to add dynamic right operand values.
+
+Note: **Theoretical solution provided by the following publication**(that requires major changes to ODRL 2.2): Akaichi *et al.*, 2024, [*'Interoperable and Continuous Usage Control Enforcement in Dataspaces'*](https://raw.githubusercontent.com/woutslabbinck/papers/main/2024/Interoperable_and_Continuous_Usage_Control_Enforcement_in_Dataspaces.pdf).
+
+
+**Example: Constraint with dynamic Right Operand value being resolved**
+Dynamic constraint: If the current date time is less than the right operand value, the constraint is satisfied.
+```turtle
+@prefix ex: <http://example.org/> .
+
+<urn:uuid:constraint:ab67b414-d0c8-48f6-8554-524130561f84> a odrl:Constraint;
+  odrl:leftOperand odrl:dateTime ;
+  odrl:operator odrl:lt ;
+  odrl:rightOperandReference ex:operandReference1 .
+
+ex:operandReference1 a odrl3proposal:OperandReference ;
+    odrl3proposal:reference ex:externalSource ;
+    odrl3proposal:path ex:updatedValue .
+```
+
+External source hosted at `http://example.org/externalSource` contains following data (represented as `text/turtle`)
+```turtle
+@prefix ex: <http://example.org/> .
+
+ex:externalSource ex:updatedValue "2018-02-12T11:20:10.999Z"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
+```
+
+So when following the SHACL Property Path, the Literal (`"2018-02-12T11:20:10.999Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>`) is retrieved.
+This literal can then be compared against the left operand of the constraint.
+
 
 ODRL 3.0 Proposal {#proposal}
 ============================
@@ -122,6 +175,39 @@ Type: [rdf:Property](http://www.w3.org/1999/02/22-rdf-syntax-ns#Property), [skos
 Definition: The `scope` property indicates the actions on which a `odrl:Policy`, with the subject `odrl:Asset` as `odrl:target`, can be defined.
 Domain: [odrl:Asset](http://www.w3.org/ns/odrl/2/Asset)
 Range: [odrl:Action](http://www.w3.org/ns/odrl/2/Action)
+</pre>
+
+### Operand Rerefence ### {#operandReference}
+
+<pre class=simpledef>
+IRI: [odrl3proposal:OperandReference](https://w3id.org/force/odrl3proposal#OperandReference)
+Label: Operand Rerefence
+Type: [rdfs:Class](http://www.w3.org/2000/01/rdf-schema#Class), [skos:Concept](http://www.w3.org/2004/02/skos/core#Concept)
+Definition: The `Operand Reference` class is used to to represent a Right Operand Value that has to be dynamically be materialized based on its properties.
+</pre>
+
+### Path ### {#path}
+
+<pre class=simpledef>
+IRI: [odrl3proposal:path](https://w3id.org/force/odrl3proposal#path)
+Label: path
+Type: [skos:Concept](http://www.w3.org/2004/02/skos/core#Concept), [rdf:Property](http://www.w3.org/1999/02/22-rdf-syntax-ns#Property)
+Definition: The `path` property indicates the SHACL Property Path which describes the path from a specific focus node to a value it describes.
+Domain: [odrl3proposal:OperandReference](https://w3id.org/force/odrl3proposal#OperandReference)
+Range: [sh:path](http://www.w3.org/ns/shacl#path)
+Note: There is an extra constraint to the SHACL Property Path: It MUST only resolve to one value.
+</pre>
+
+### Reference ### {#reference}
+
+<pre class=simpledef>
+IRI: [odrl3proposal:reference](https://w3id.org/force/odrl3proposal#reference)
+Label: reference
+Type: [skos:Concept](http://www.w3.org/2004/02/skos/core#Concept), [rdf:Property](http://www.w3.org/1999/02/22-rdf-syntax-ns#Property)
+Definition: The `reference` property indicates external source that has to be dereferenced.
+Domain: [odrl3proposal:OperandReference](https://w3id.org/force/odrl3proposal#OperandReference)
+Range: [xsd:anyURI](http://www.w3.org/2001/XMLSchema#anyURI)
+Note: The source MUST have a valid RDF presentation.
 </pre>
 
 ## Changing existing terms of the ODRL vocabulary ## {#changing-terms}

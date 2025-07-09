@@ -2055,13 +2055,17 @@ c-[il] { color: #000000 } /* Literal.Number.Integer.Long */
      <a href="#use-cases"><span class="secno">2</span> <span class="content">Use Cases</span></a>
      <ol class="toc">
       <li><a href="#uc1"><span class="secno">2.1</span> <span class="content">UC1 - Dynamic Asset Collection Materialization</span></a>
-      <li><a href="#uc2"><span class="secno">2.2</span> <span class="content">UC2 - ...</span></a>
+      <li><a href="#uc2"><span class="secno">2.2</span> <span class="content">UC2 - Dynamic Right Operand Constraint Value</span></a>
      </ol>
     <li>
      <a href="#requirements"><span class="secno">3</span> <span class="content">Requirements</span></a>
      <ol class="toc">
       <li><a href="#r1"><span class="secno">3.1</span> <span class="content">R1 - Define Asset Collection membership relation</span></a>
-      <li><a href="#r2"><span class="secno">3.2</span> <span class="content">R2 - ...</span></a>
+      <li>
+       <a href="#r2"><span class="secno">3.2</span> <span class="content">R2 - Dynamic ODRL Specification</span></a>
+       <ol class="toc">
+        <li><a href="#proposed-solution"><span class="secno">3.2.1</span> <span class="content">Proposed solution</span></a>
+       </ol>
      </ol>
     <li>
      <a href="#proposal"><span class="secno">4</span> <span class="content">ODRL 3.0 Proposal</span></a>
@@ -2113,8 +2117,20 @@ However, if this materialisation is still to be done to enforce policies over a 
 i.e., there is still no information in the state of the world of which Assets are <code>partOf</code> the Asset Collection,
 a solution is required to materialise which resources are members of the collection
 depending on the relation between said resources and the collection.</p>
-   <h3 class="heading settled" data-level="2.2" id="uc2"><span class="secno">2.2. </span><span class="content">UC2 - ...</span><a class="self-link" href="#uc2"></a></h3>
-    TODO 
+   <h3 class="heading settled" data-level="2.2" id="uc2"><span class="secno">2.2. </span><span class="content">UC2 - Dynamic Right Operand Constraint Value</span><a class="self-link" href="#uc2"></a></h3>
+   <p>An ODRL Constraint has two operands to which comparisons can be made with one relational operator:</p>
+   <ul>
+    <li data-md>
+     <p><strong>Left Operand</strong>: An instance of <code>odrl:LeftOperand</code>, linked via the <code>odrl:leftOperand</code> property.</p>
+    <li data-md>
+     <p><strong>Operator</strong>: A comparison operator from the <code>odrl:Operator</code> class.</p>
+    <li data-md>
+     <p><strong>Right Operand</strong>: Either a static value (<code>odrl:rightOperand</code>) or a dynamic reference (<code>odrl:rightOperandReference</code>) that must be dereferenced at evaluation time.</p>
+   </ul>
+   <p>The problem is that there is not enough information to dereference a value from the IRI of the <code>odrl:rightOperandReference</code> relation.
+There is a need for a solution that deterministically can fetch the value, such that proper comparisons can be made.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> <strong>Publication that introduced this problem and gave a theoretical solution</strong>(that requires major changes to ODRL 2.2): Akaichi <em>et al.</em>, 2024, <a href="https://raw.githubusercontent.com/woutslabbinck/papers/main/2024/Interoperable_and_Continuous_Usage_Control_Enforcement_in_Dataspaces.pdf"><em>'Interoperable and Continuous Usage Control Enforcement in Dataspaces'</em></a>.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> As of 09/07/2025, there exists no formal method to materialize left operand values from their classes. This issue is known by the ODRL Community Group, more specific the people working on the ODRL Formal Semantics specification <a data-link-type="biblio" href="#biblio-odrl-formal-semantics" title="ODRL Formal Semantics">[odrl-formal-semantics]</a>.</p>
    <h2 class="heading settled" data-level="3" id="requirements"><span class="secno">3. </span><span class="content">Requirements</span><a class="self-link" href="#requirements"></a></h2>
    <h3 class="heading settled" data-level="3.1" id="r1"><span class="secno">3.1. </span><span class="content">R1 - Define Asset Collection membership relation</span><a class="self-link" href="#r1"></a></h3>
    <p>To solve <a href="#uc1">UC1</a>, there is the need to describe the relation between the Asset Collection and its Asset members,
@@ -2142,8 +2158,44 @@ need to be materialised using the <code>ldp:contains</code> relation, if</p>
 <c- g>&lt;http://localhost:3000/container/resource2.txt></c-> <c- nn>odrl</c-><c- p>:</c-><c- f>partOf</c-> <c- g>&lt;http://localhost:3000/container/></c-> <c- p>.</c->
 <c- g>&lt;http://localhost:3000/container/resource3.png></c-> <c- nn>odrl</c-><c- p>:</c-><c- f>partOf</c-> <c- g>&lt;http://localhost:3000/container/></c-> <c- p>.</c->
 </pre>
-   <h3 class="heading settled" data-level="3.2" id="r2"><span class="secno">3.2. </span><span class="content">R2 - ...</span><a class="self-link" href="#r2"></a></h3>
-    TODO 
+   <h3 class="heading settled" data-level="3.2" id="r2"><span class="secno">3.2. </span><span class="content">R2 - Dynamic ODRL Specification</span><a class="self-link" href="#r2"></a></h3>
+   <p>To solve <a href="#uc2">UC2</a>, there is a need for enough information and an algorithm to deterministically dereference the Right Operand Reference Value.</p>
+   <h4 class="heading settled" data-level="3.2.1" id="proposed-solution"><span class="secno">3.2.1. </span><span class="content">Proposed solution</span><a class="self-link" href="#proposed-solution"></a></h4>
+   <p>Introduction of the class <a href="#operandReference">Operand Reference</a> with two properties:</p>
+   <ul>
+    <li data-md>
+     <p><a href="#reference">reference</a>: The IRI that has to be derefenced.</p>
+    <li data-md>
+     <p><a href="#path">path</a>: A SHACL Property path, which is used to derive a value from a focus node (in this case the referenced IRI)</p>
+   </ul>
+   <p>When the reference source is derefenced and the SHACL Property Path is executed on the source, this will always produce one value under the following assumptions (which MUST be conformed to):</p>
+   <ul>
+    <li data-md>
+     <p>The source to be derefenced MUST be a valid RDF Document</p>
+    <li data-md>
+     <p>The SHACL Property Path MUST always, when followed, resolve into a single value.</p>
+   </ul>
+   <p>As the policy remains static and the source can change over time, this solution proposes a method to add dynamic right operand values.</p>
+   <p class="note" role="note"><span class="marker">Note:</span> <strong>Theoretical solution provided by the following publication</strong>(that requires major changes to ODRL 2.2): Akaichi <em>et al.</em>, 2024, <a href="https://raw.githubusercontent.com/woutslabbinck/papers/main/2024/Interoperable_and_Continuous_Usage_Control_Enforcement_in_Dataspaces.pdf"><em>'Interoperable and Continuous Usage Control Enforcement in Dataspaces'</em></a>.</p>
+   <p><strong>Example: Constraint with dynamic Right Operand value being resolved</strong> Dynamic constraint: If the current date time is less than the right operand value, the constraint is satisfied.</p>
+<pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>ex:</c-> <c- g>&lt;http://example.org/></c-> <c- p>.</c->
+
+<c- g>&lt;urn:uuid:constraint:ab67b414-d0c8-48f6-8554-524130561f84></c-> <c- b>a</c-> <c- nn>odrl</c-><c- p>:</c-><c- f>Constraint</c-><c- p>;</c->
+  <c- nn>odrl</c-><c- p>:</c-><c- f>leftOperand</c-> <c- nn>odrl</c-><c- p>:</c-><c- f>dateTime</c-> <c- p>;</c->
+  <c- nn>odrl</c-><c- p>:</c-><c- f>operator</c-> <c- nn>odrl</c-><c- p>:</c-><c- f>lt</c-> <c- p>;</c->
+  <c- nn>odrl</c-><c- p>:</c-><c- f>rightOperandReference</c-> <c- nn>ex</c-><c- p>:</c-><c- f>operandReference1</c-> <c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>operandReference1</c-> <c- b>a</c-> <c- nn>odrl3proposal</c-><c- p>:</c-><c- f>OperandReference</c-> <c- p>;</c->
+    <c- nn>odrl3proposal</c-><c- p>:</c-><c- f>reference</c-> <c- nn>ex</c-><c- p>:</c-><c- f>externalSource</c-> <c- p>;</c->
+    <c- nn>odrl3proposal</c-><c- p>:</c-><c- f>path</c-> <c- nn>ex</c-><c- p>:</c-><c- f>updatedValue</c-> <c- p>.</c->
+</pre>
+   <p>External source hosted at <code>http://example.org/externalSource</code> contains following data (represented as <code>text/turtle</code>)</p>
+<pre class="language-turtle highlight"><c- k>@prefix</c-> <c- nn>ex:</c-> <c- g>&lt;http://example.org/></c-> <c- p>.</c->
+
+<c- nn>ex</c-><c- p>:</c-><c- f>externalSource</c-> <c- nn>ex</c-><c- p>:</c-><c- f>updatedValue</c-> <c- s>"2018-02-12T11:20:10.999Z"</c-><c- o>^^</c->&lt;http://www.w3.org/2001/XMLSchema#dateTime> <c- p>.</c->
+</pre>
+   <p>So when following the SHACL Property Path, the Literal (<code>"2018-02-12T11:20:10.999Z"^^&lt;http://www.w3.org/2001/XMLSchema#dateTime></code>) is retrieved.
+This literal can then be compared against the left operand of the constraint.</p>
    <h2 class="heading settled" data-level="4" id="proposal"><span class="secno">4. </span><span class="content">ODRL 3.0 Proposal</span><a class="self-link" href="#proposal"></a></h2>
    <h3 class="heading settled" data-level="4.1" id="new-terms"><span class="secno">4.1. </span><span class="content">Adding new terms to the ODRL vocabulary</span><a class="self-link" href="#new-terms"></a></h3>
    <h4 class="heading settled" data-level="4.1.1" id="relation"><span class="secno">4.1.1. </span><span class="content">Relation</span><a class="self-link" href="#relation"></a></h4>

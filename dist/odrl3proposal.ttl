@@ -6,7 +6,7 @@
 @prefix owl:           <http://www.w3.org/2002/07/owl#> .
 @prefix rdf:           <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs:          <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix sh:             <http://www.w3.org/ns/shacl#>.
+@prefix sh:            <http://www.w3.org/ns/shacl#>.
 @prefix skos:          <http://www.w3.org/2004/02/skos/core#> .
 @prefix vann:          <http://purl.org/vocab/vann/> .
 @prefix xsd:           <http://www.w3.org/2001/XMLSchema#> .
@@ -64,13 +64,14 @@ odrl3proposal:path a rdf:Property, skos:Concept ;
     rdfs:label "path"@en ;
     rdfs:isDefinedBy odrl3proposal: ;
     skos:definition "The `path` property indicates the SHACL Property Path which describes the path from a specific focus node to a value it describes."@en ;
-    skos:scopeNote "ODRL Core Vocabulary Terms"@en ;
+    skos:scopeNote "There is an extra constraint to the SHACL Property Path: It MUST only resolve to one value."@en ;
     rdfs:domain odrl3proposal:OperandReference ;
     rdfs:range sh:path .
 
 odrl3proposal:reference a rdf:Property, skos:Concept ;
     rdfs:label "reference"@en ;
     rdfs:isDefinedBy odrl3proposal: ;
-    skos:definition "The `reference` property indicates the SHACL Property Path which describes the path from a specific focus node to a value it describes."@en ;
+    skos:definition "The `reference` property indicates external source that has to be dereferenced."@en ;
+    skos:scopeNote "The source MUST have a valid RDF presentation."@en ;
     rdfs:domain odrl3proposal:OperandReference ;
     rdfs:range xsd:anyURI .
