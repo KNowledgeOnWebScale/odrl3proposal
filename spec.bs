@@ -177,11 +177,11 @@ Domain: [odrl:Asset](http://www.w3.org/ns/odrl/2/Asset)
 Range: [odrl:Action](http://www.w3.org/ns/odrl/2/Action)
 </pre>
 
-### Operand Rerefence ### {#operandReference}
+### Operand Reference ### {#operandReference}
 
 <pre class=simpledef>
 IRI: [odrl3proposal:OperandReference](https://w3id.org/force/odrl3proposal#OperandReference)
-Label: Operand Rerefence
+Label: Operand Reference
 Type: [rdfs:Class](http://www.w3.org/2000/01/rdf-schema#Class), [skos:Concept](http://www.w3.org/2004/02/skos/core#Concept)
 Definition: The `Operand Reference` class is used to to represent a Right Operand Value that has to be dynamically be materialized based on its properties.
 </pre>

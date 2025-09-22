@@ -40,7 +40,7 @@
 # ---------------- Classes ------------------ #
 
 odrl3proposal:OperandReference a rdfs:Class, skos:Concept ;
-    rdfs:label "Operand Rerefence"@en ;
+    rdfs:label "Operand Reference"@en ;
     rdfs:isDefinedBy odrl3proposal: ;
     skos:definition "The `Operand Reference` class is used to to represent a Right Operand Value that has to be dynamically be materialized based on its properties."@en .
 
